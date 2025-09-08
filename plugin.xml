@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin id="com.outsystems.plugins.barcode" version="1.2.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<plugin id="com.outsystems.plugins.barcode" version="2.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
   <name>OSBarcode</name>
   <description>Cordova Bridge for the OutSystems Officially Supported Barcode Plugin.</description>
   <author>OutSystems Inc</author>
@@ -26,6 +26,7 @@
     <config-file parent="/*" target="AndroidManifest.xml"/>
     <source-file src="src/android/com/outsystems/plugins/barcode/OSBarcode.kt" target-dir="app/src/main/kotlin/com/outsystems/plugins/barcode"/>
     <framework src="src/android/com/outsystems/plugins/barcode/build.gradle" custom="true" type="gradleReference" />
+
   </platform>
   <platform name="ios">
     <config-file parent="/*" target="config.xml">
@@ -42,16 +43,16 @@
 
     <source-file src="src/ios/OSBarcode.swift" />
     <source-file src="src/ios/OSBarcodeError.swift" />
-    <source-file src="src/ios/OSBarcodeScanArgumentsModel.swift" />
-
+    
     <source-file src="src/ios/OSBARCArgumentMappable.swift" target-dir="extensions" />
+    <source-file src="src/ios/OSBARCScanParameters+Decodable.swift" target-dir="extensions" />
 
     <podspec>
       <config>
         <source url="https://cdn.cocoapods.org/"/>
       </config>
       <pods use-frameworks="true">
-        <pod name="OSBarcodeLib" spec="1.1.3" />
+        <pod name="OSBarcodeLib" spec="2.0.1" />
       </pods>
     </podspec>
   </platform>

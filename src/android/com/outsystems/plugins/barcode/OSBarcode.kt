@@ -2,25 +2,35 @@ package com.outsystems.plugins.barcode
 
 import android.content.Intent
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
 import com.outsystems.plugins.barcode.controller.OSBARCController
 import com.outsystems.plugins.barcode.model.OSBARCError
 import com.outsystems.plugins.barcode.model.OSBARCScanParameters
+import com.outsystems.plugins.barcode.model.OSBARCScanResult
+import com.outsystems.plugins.barcode.model.OSBARCScannerHint
 import com.outsystems.plugins.oscordova.CordovaImplementation
-import kotlinx.coroutines.runBlocking
 import org.apache.cordova.CallbackContext
 import org.apache.cordova.CordovaInterface
 import org.apache.cordova.CordovaWebView
 import org.json.JSONArray
+import org.json.JSONObject
+import java.lang.reflect.Type
 
 class OSBarcode : CordovaImplementation() {
-
     companion object {
         private const val ERROR_FORMAT_PREFIX = "OS-PLUG-BARC-"
     }
 
     override var callbackContext: CallbackContext? = null
     private lateinit var barcodeController: OSBARCController
-    val gson by lazy { Gson() }
+    val gson: Gson by lazy {
+        GsonBuilder()
+            .registerTypeAdapter(OSBARCScannerHint::class.java, OSBARCScannerHintAdapter())
+            .create()
+    }
 
     override fun execute(
         action: String,
@@ -45,8 +55,12 @@ class OSBarcode : CordovaImplementation() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         barcodeController.handleActivityResult(requestCode, resultCode, intent,
-            { result ->
-                sendPluginResult(result, null)
+            { result: OSBARCScanResult ->
+                val jsonObject = JSONObject().apply {
+                    put("ScanResult", result.text)
+                    put("format", result.format.ordinal)
+                }
+                sendPluginResult(jsonObject, null)
             },
             { error ->
                 sendPluginResult(null, Pair(formatErrorCode(error.code), error.description))
@@ -96,6 +110,18 @@ class OSBarcode : CordovaImplementation() {
 
     private fun formatErrorCode(code: Int): String {
         return ERROR_FORMAT_PREFIX + code.toString().padStart(4, '0')
+    }
+
+    private class OSBARCScannerHintAdapter : JsonDeserializer<OSBARCScannerHint> {
+        override fun deserialize(
+            json: JsonElement?,
+            typeOfT: Type?,
+            context: JsonDeserializationContext?
+        ): OSBARCScannerHint {
+            return json?.asInt?.let {
+                OSBARCScannerHint.entries.getOrNull(it)
+            } ?: OSBARCScannerHint.UNKNOWN
+        }
     }
 
 }
