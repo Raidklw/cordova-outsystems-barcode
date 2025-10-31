@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin id="com.outsystems.plugins.barcode" version="2.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<plugin id="com.outsystems.plugins.barcode" version="2.0.2" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
   <name>OSBarcode</name>
-  <description>Cordova Bridge for the OutSystems Officially Supported Barcode Plugin.</description>
+  <description>Cordova Bridge for the OutSystems UNOfficially Supported Barcode Plugin.</description>
   <author>OutSystems Inc</author>
   <js-module name="OSBarcode" src="www/OSBarcode.js">
     <clobbers target="cordova.plugins.OSBarcode"/>
